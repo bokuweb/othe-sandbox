@@ -6,11 +6,20 @@
 (defn on-command ;Viewからのコマンド通知を処理するハンドラ
   [cmdline]
   (let [cmd (first cmdline)
-        pos(second cmdline)]
+        pos (second cmdline)]
     (cond
       (= cmd :move) (play-movepos)
       (= cmd :ext) (System/exit 0)
       :else nul)))
+
+; destructuring
+;(defn on-command ;Viewからのコマンド通知を処理するハンドラ
+;  [[cmd pos]]
+;  (cond
+;    (= cmd :move) (play-movepos)
+;    (= cmd :ext) (System/exit 0)
+;    :else nul))
+
 
 (defn -main ;エントリポイント
   [&args]
