@@ -9,9 +9,9 @@
 (def first-row 0)
 (def last-row b-size)
 
-(defun col-from-pos [pos] (mod pos b-size))
-(defun row-from-pos [pos] (quot pos b-size))
-(defun pos-from-rowcol [r c] (+ (* r b-size) c))
+(defn col-from-pos [pos] (mod pos b-size))
+(defn row-from-pos [pos] (quot pos b-size))
+(defn pos-from-rowcol [r c] (+ (* r b-size) c))
 
 ; #{:foo :bar :buz} 順序に意味が無いデータの集まり重複は許さない
 (def dirs #{:n :ne :e :se :s :sw :w :nw})
