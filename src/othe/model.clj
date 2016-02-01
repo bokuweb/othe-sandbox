@@ -37,6 +37,7 @@
      :w west
      :nw (comp north west)}))
 
+;; 折り返し確認
 (def not-wrapped?
   (let [east? (fn [pos] (> (col-from-pos pos) first-col))
         west? (fn [pos] (< (col-from-pos pos) (dec last-col)))]
@@ -48,5 +49,26 @@
      :sw west?
      :nw west?}))
 
+; 上辺下辺を突き抜けていないか確認する
 (defn- in-board? [pos] (and (>= pos first-pos) (< pos last-pos)))
 
+(defn- posline-for-dir
+  "posにおけるdir方向へのposline"
+  [pos dir]
+  (let [suc (successor dir)
+        nwrap? (not-wrapped? dir)]
+    (take-while (fn [pos] (and (nwrap? pos) (in-board? pos))) ; take-while listの各要素に対してfを呼びながらその結果が真の間だけlisの先頭から要素
+                (iterate suc (suc pos))))) ;iterateは関数fと値nをとりnから始まる無限リストを作る
+
+(defn- free? [brd pos] (= (brd pos) :free)) ; clojureのベクタは引数をインデックスとみなして要素を取り出す関数としても使える
+
+(defn- self? [brd pos bw]
+  (and (not (free? brd pos)) (= (brd pos) bw)))
+
+(defn- opponent? [brd pos bw]
+  (and (not (free? brd pos)) (not= (brd pos) bw)))
+
+(defn- all-poslines
+  "posにおける各方角へのposlineを集めたシーケンス"
+  [pos]
+  (filter not-empty (for [dir dirs] (posline-for-dir pos dir))))
