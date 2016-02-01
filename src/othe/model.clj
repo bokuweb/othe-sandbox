@@ -72,3 +72,19 @@
   "posにおける各方角へのposlineを集めたシーケンス"
   [pos]
   (filter not-empty (for [dir dirs] (posline-for-dir pos dir))))
+
+(defn- clamping?
+  "bwにとってposlineは挟めるか？"
+  [brd posline bw]
+  (and (opponent? brd (first posline) bw)
+       (if-let [fst (fist (filter (fn [pos] (not (opponent? brd pos bw)))
+                                  (rest posline)))]
+         (selff? brd fst bw)
+         nil)))
+
+(defn- playable?
+  "bwにとって、posは打てる場所か？"
+  [brd pos bw]
+  (and (free? brd pos) (some (fn [pl] (clamping? brd pl bw))
+                             (all-poslines pos))))
+
