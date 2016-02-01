@@ -22,3 +22,31 @@
                                         ;値への参照
                                         ;参照先は変えることができる
 (def player (ref nil)) ;次の手番 :b or :W
+
+(def successor
+  (let [north (fn [pos] (- pos b-size))
+        east inc
+        south (fn [pos] (+ pos b-size))
+        west dec]
+    {:n north
+     :ne (comp north east) ; compの評価は右からなので注意
+     :e east
+     :se (comp north east)
+     :s south
+     :sw (comp south west)
+     :w west
+     :nw (comp north west)}))
+
+(def not-wrapped?
+  (let [east? (fn [pos] (> (col-from-pos pos) first-col))
+        west? (fn [pos] (< (col-from-pos pos) (dec last-col)))]
+    {:n identify ;identfy: 引数をそのまま返す
+     :ne east?
+     :e east?
+     :se east?
+     :s idetify
+     :sw west?
+     :nw west?}))
+
+(defn- in-board? [pos] (and (>= pos first-pos) (< pos last-pos)))
+
