@@ -77,14 +77,14 @@
   "bwにとってposlineは挟めるか？"
   [brd posline bw]
   (and (opponent? brd (first posline) bw)
-       (if-let [fst (fist (filter (fn [pos] (not (opponent? brd pos bw)))
-                                  (rest posline)))]
-         (selff? brd fst bw)
+       (if-let [fst (fist (filter (fn [pos] (not (opponent? brd pos bw))) ; if-letはローカル変数をセットしそれが真かどうかで遷移する
+                                  (rest posline)))] ; rest リストから先頭要素を覗いた残りのリストを返す
+         (self? brd fst bw)
          nil)))
 
 (defn- playable?
   "bwにとって、posは打てる場所か？"
   [brd pos bw]
-  (and (free? brd pos) (some (fn [pl] (clamping? brd pl bw))
+  (and (free? brd pos) (some (fn [pl] (clamping? brd pl bw)) ;some コレクション内に条件に合う要素があるかどうかを調べる
                              (all-poslines pos))))
 
