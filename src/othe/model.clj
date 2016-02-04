@@ -90,9 +90,14 @@
 
 (def initial-oprs
   "ゲームの初期状態:b:wが２個ずつを表すoprのマップ"
-  (let [cntr (dec (quot b-size 2))
+  (let [cntr (dec (quot b-size 2)) ; quot: 商を返す
         pos (pos-from-rowcol cntr cntr)]
     {pos :b
      ((successor :se) pos) :b
      ((successor :e) pos) :w
      ((successor :s) pos) :w}))
+
+(defn- board-manipulator
+  "oprのマップに基いて、盤面を変更するラムダ"
+  [oprs]
+  (fn [pos st] (if-let [s (oprs pos)] s st)))
