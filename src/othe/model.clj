@@ -88,3 +88,11 @@
   (and (free? brd pos) (some (fn [pl] (clamping? brd pl bw)) ;some コレクション内に条件に合う要素があるかどうかを調べる
                              (all-poslines pos))))
 
+(def initial-oprs
+  "ゲームの初期状態:b:wが２個ずつを表すoprのマップ"
+  (let [cntr (dec (quot b-size 2))
+        pos (pos-from-rowcol cntr cntr)]
+    {pos :b
+     ((successor :se) pos) :b
+     ((successor :e) pos) :w
+     ((successor :s) pos) :w}))
