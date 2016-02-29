@@ -101,3 +101,8 @@
   "oprのマップに基いて、盤面を変更するラムダ"
   [oprs]
   (fn [pos st] (if-let [s (oprs pos)] s st)))
+
+(defn- manipulated-board
+  "manipulatorを盤面に対して読んだ後の新しい盤面"
+  [brd manip]
+  (vec (map-indexed manip brd)))
