@@ -77,14 +77,32 @@
   "bwにとってposlineは挟めるか？"
   [brd posline bw]
   (and (opponent? brd (first posline) bw)
-       (if-let [fst (fist (filter (fn [pos] (not (opponent? brd pos bw)))
-                                  (rest posline)))]
-         (selff? brd fst bw)
+       (if-let [fst (fist (filter (fn [pos] (not (opponent? brd pos bw))) ; if-letはローカル変数をセットしそれが真かどうかで遷移する
+                                  (rest posline)))] ; rest リストから先頭要素を覗いた残りのリストを返す
+         (self? brd fst bw)
          nil)))
 
 (defn- playable?
   "bwにとって、posは打てる場所か？"
   [brd pos bw]
-  (and (free? brd pos) (some (fn [pl] (clamping? brd pl bw))
+  (and (free? brd pos) (some (fn [pl] (clamping? brd pl bw)) ;some コレクション内に条件に合う要素があるかどうかを調べる
                              (all-poslines pos))))
 
+(def initial-oprs
+  "ゲームの初期状態:b:wが２個ずつを表すoprのマップ"
+  (let [cntr (dec (quot b-size 2)) ; quot: 商を返す
+        pos (pos-from-rowcol cntr cntr)]
+    {pos :b
+     ((successor :se) pos) :b
+     ((successor :e) pos) :w
+     ((successor :s) pos) :w}))
+
+(defn- board-manipulator
+  "oprのマップに基いて、盤面を変更するラムダ"
+  [oprs]
+  (fn [pos st] (if-let [s (oprs pos)] s st)))
+
+(defn- manipulated-board
+  "manipulatorを盤面に対して読んだ後の新しい盤面"
+  [brd manip]
+  (vec (map-indexed manip brd)))
